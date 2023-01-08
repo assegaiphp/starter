@@ -1,0 +1,6 @@
+.htaccess
+.env
+
+/.idea/
+/vendor/
+/config/local*.php

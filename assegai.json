@@ -1,0 +1,18 @@
+{
+    "name": "starter",
+    "description": "AssegaiPHP is a modern, powerful server-side framework for PHP developers. It is heavily inspired by NestJS and Angular and is designed to be a viable alternative to other modern frameworks. With AssegaiPHP, developers can quickly and easily get their projects up and running with a highly testable, scalable, loosely coupled, and easily maintainable application architecture. The starter project repository contains everything you need to get started with AssegaiPHP, including a pre-configured application skeleton and all the necessary dependencies. Simply install it with composer and you're ready to go!",
+    "version": "1.0.0",
+    "projectType": "project",
+    "root": "",
+    "sourceRoot": "src",
+    "scripts": {
+        "test": "./vendor/bin/phpunit --testdox"
+    },
+    "development": {
+        "server": {
+            "host": "localhost",
+            "port": 5000,
+            "openBrowser": true
+        }
+    }
+}
