@@ -25,7 +25,7 @@ So if you're looking for a modern, efficient, and scalable PHP framework, look n
 ### Quick Start
 
 ```bash
-$ composer require assegaiphp/core
+$ git clone --depth=1 https://github.com/assegaiphp/starter.git
 ```
 
 * To check out the [guide][guide], visit [assegaiphp.com][website]. :books:
