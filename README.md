@@ -10,7 +10,15 @@ AssegaiPHP is a complete server-side web framework that enables you to create cl
 
 ## Philosophy
 
-<p>In recent years, PHP has gained a lot of features out the box that make it a really compelling language for developers. Assegai aims to take advantage of these wonderful features and provide an application architecture which allows for the effortless creation of highly testable, scalable, loosely coupled and easily maintainable applications. The architecture is heavily inspired by Nestjs.</p>
+We believe in the power of simplicity and efficiency. That's why we've designed our framework to be as intuitive and straightforward as possible, taking inspiration from successful frameworks like [NestJS] and [Angular].
+
+Our goal is to provide a comprehensive and modern toolkit for PHP developers, one that allows them to get their applications up and running as quickly and easily as possible. Whether you're a seasoned developer or just starting out, we believe that AssegaiPHP has something to offer you.
+
+Our framework is built on the philosophy of loosely coupled, easily maintainable code. We believe that by following this approach, developers can create applications that are more scalable and easier to test.
+
+But AssegaiPHP isn't just about code – it's about community too. We believe in the power of open-source development, and we're dedicated to building a thriving community of developers who share our passion for creating high-quality applications.
+
+So if you're looking for a modern, efficient, and scalable PHP framework, look no further than AssegaiPHP. We can't wait to see what you build with it!
 
 ## Getting started
 
@@ -52,3 +60,5 @@ Assegai is [MIT licensed](LICENSE).
 [guide]: https://assegaiphp.com/guide
 [support]: https://assegaiphp.com/support
 [PHP]: https://php.net
+[NestJS]: https://nestjs.com
+[Angular]: https://angular.io
