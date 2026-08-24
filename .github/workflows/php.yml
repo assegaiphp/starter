@@ -1,0 +1,87 @@
+name: PHP Composer
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+    branches: ["main", "develop"]
+  workflow_dispatch:
+  schedule:
+    - cron: "17 5 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: starter-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: PHP ${{ matrix.php-version }}
+    runs-on: ubuntu-24.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ["8.4", "8.5"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+          extensions: curl, pdo
+          tools: composer:v2
+
+      - name: Validate starter manifest
+        run: composer validate --strict --no-check-lock
+
+      - name: Verify distributable state
+        run: |
+          test ! -e composer.lock
+          test ! -d vendor
+
+      - name: Lint project PHP files
+        run: find . -path './.git' -prune -o -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Resolve Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer downloads
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-php-${{ matrix.php-version }}-composer-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-php-${{ matrix.php-version }}-composer-
+            ${{ runner.os }}-composer-
+
+      - name: Resolve and install latest dependencies
+        run: composer update --prefer-dist --no-progress --no-interaction --no-ansi
+
+      - name: Audit resolved dependencies
+        run: composer audit --locked
+
+      - name: Run test suite
+        run: composer test
+
+      - name: Smoke test HTTP entry point
+        run: |
+          php -S 127.0.0.1:5000 -t public index.php > /tmp/assegai-starter-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+
+          curl --retry 10 --retry-all-errors --retry-delay 1 --fail --silent --show-error \
+            --output /tmp/assegai-starter-home.html http://127.0.0.1:5000/
+          grep --quiet 'starter is running.' /tmp/assegai-starter-home.html
+          curl --fail --silent --show-error --output /dev/null http://127.0.0.1:5000/css/style.css
+
+          missing_status=$(curl --silent --output /dev/null --write-out '%{http_code}' \
+            http://127.0.0.1:5000/definitely-missing)
+          test "$missing_status" = "404"
