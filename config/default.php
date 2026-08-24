@@ -3,57 +3,28 @@
 return [
   'company_name' => 'My Company',
   'default_password_hash_algo' => '2y',
-  'databases' => [
-    'mysql' => [
-      'assegai_test_db' => [
-        'host' => 'localhost',
-        'user' => 'root',
-        'password' => '',
-        'port' => 3306,
-      ],
-    ],
-    'pgsql' => [
-      'db_name' => [
-        'host' => 'localhost',
-        'user' => 'root',
-        'password' => '',
-        'port' => 5432,
-      ],
-    ],
-    'sqlite' => [
-      'db_name' => [
-        'path' => '.data/db_name.sq3',
-      ],
-    ],
-    'mongodb' => [],
+  'app' => [
+    'title' => 'AssegaiPHP',
+    'description' => 'A structured PHP application built with Assegai.',
+    'keywords' => 'AssegaiPHP, PHP, Framework',
+    'author' => 'My Company',
+    'lang' => 'en',
+    'favicon' => ['/favicon.ico', 'image/x-icon'],
+    'links' => ['/css/style.css'],
+    'headScripts' => [],
+    'bodyScripts' => [],
+    'headScriptUrls' => ['/js/main.js'],
+    'bodyScriptUrls' => [],
   ],
   'request' => [
     'DEFAULT_LIMIT' => 10,
     'DEFAULT_SKIP' => 0,
   ],
-  'authentication' => [
-    'secret' => 'SECRET_KEY',
-    'strategies' => [
-      'local' => 'Assegai\\Core\\Authentication\\Strategies\\LocalStrategy',
-      'jwt' => 'Assegai\\Core\\Authentication\\Strategies\\JWTStrategy',
-      'oauth' => 'Assegai\\Core\\Authentication\\Strategies\\OAuthStrategy',
-    ],
-    'default_strategy' => 'local',
-    'jwt' => [
-      'audience' => 'https://yourdomain.com',
-      'issuer' => 'assegai',
-      'lifespan' => '1 hour',
-      'entityName' => 'user',
-      'entityClassName' => 'Assegai\\App\\Users\\Entities\\UserEntity',
-      'entityIdFieldName' => 'email',
-      'entityPasswordFieldName' => 'password',
-    ],
-  ],
   'contact' => [
     'links' => [
       'assegai_website' => 'https://assegaiphp.com',
       'guide_link' => 'https://assegaiphp.com/guide',
-      'documentation_link' => 'https://docs.assegaiphp.com',
+      'documentation_link' => 'https://assegaiphp.com/guide',
       'support_link' => 'https://assegaiphp.com/support',
       'blog_link' => 'https://blog.assegaiphp.com',
     ]

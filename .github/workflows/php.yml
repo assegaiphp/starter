@@ -1,0 +1,117 @@
+name: PHP Composer
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+    branches: ["main", "develop"]
+  workflow_dispatch:
+  schedule:
+    - cron: "17 5 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: starter-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: PHP ${{ matrix.php-version }}
+    runs-on: ubuntu-24.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ["8.4", "8.5"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+          extensions: curl, pdo
+          tools: composer:v2
+
+      - name: Validate starter manifest
+        run: composer validate --strict --no-check-lock
+
+      - name: Verify distributable state
+        run: |
+          test ! -e composer.lock
+          test ! -d vendor
+
+      - name: Lint project PHP files
+        run: find . -path './.git' -prune -o -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Check framework release availability
+        id: framework
+        run: |
+          release_metadata=$(composer show assegaiphp/core --all --format=json)
+
+          if printf '%s' "$release_metadata" | php -r '
+            $metadata = json_decode(stream_get_contents(STDIN), true, 512, JSON_THROW_ON_ERROR);
+            exit(in_array("0.10.0", $metadata["versions"] ?? [], true) ? 0 : 1);
+          '; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Framework release unavailable::Core 0.10.0 is not published yet; dependency and runtime checks are deferred."
+            {
+              echo "### Dependency checks deferred"
+              echo "Core 0.10.0 is not published yet. This workflow will activate the dependency, audit, test, and HTTP checks automatically after publication."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Resolve Composer cache directory
+        if: steps.framework.outputs.available == 'true'
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer downloads
+        if: steps.framework.outputs.available == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-php-${{ matrix.php-version }}-composer-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-php-${{ matrix.php-version }}-composer-
+            ${{ runner.os }}-composer-
+
+      - name: Resolve and install latest dependencies
+        if: steps.framework.outputs.available == 'true'
+        run: composer update --prefer-dist --no-progress --no-interaction --no-ansi
+
+      - name: Audit resolved dependencies
+        if: steps.framework.outputs.available == 'true'
+        run: composer audit --locked
+
+      - name: Run test suite
+        if: steps.framework.outputs.available == 'true'
+        run: composer test
+
+      - name: Smoke test HTTP entry point
+        if: steps.framework.outputs.available == 'true'
+        run: |
+          php -S 127.0.0.1:5000 -t public index.php > /tmp/assegai-starter-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+
+          curl --retry 10 --retry-all-errors --retry-delay 1 --fail --silent --show-error \
+            --output /tmp/assegai-starter-home.html http://127.0.0.1:5000/
+          grep --quiet 'starter is running.' /tmp/assegai-starter-home.html
+          curl --fail --silent --show-error --output /dev/null http://127.0.0.1:5000/css/style.css
+          curl --fail --silent --show-error --output /dev/null http://127.0.0.1:5000/css/style%2Ecss
+
+          curl --fail --silent --show-error \
+            --output /tmp/assegai-starter-query-route.html 'http://127.0.0.1:5000/?path=definitely-missing'
+          grep --quiet 'starter is running.' /tmp/assegai-starter-query-route.html
+
+          missing_status=$(curl --silent --output /dev/null --write-out '%{http_code}' \
+            http://127.0.0.1:5000/definitely-missing)
+          test "$missing_status" = "404"

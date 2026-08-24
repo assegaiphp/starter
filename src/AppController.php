@@ -6,16 +6,26 @@ use Assegai\Core\Attributes\Controller;
 use Assegai\Core\Attributes\Http\Get;
 use Assegai\Core\Rendering\View;
 
+/**
+ * The controller for the app.
+ *
+ * @package Assegai\App
+ */
 #[Controller(path: '')]
 class AppController
 {
-  public function __construct(private readonly AppService $appService)
-  {    
+  public function __construct(protected AppService $appService)
+  {
   }
 
+  /**
+   * The home page.
+   *
+   * @return View The home page view.
+   */
   #[Get]
-  function index(): View
+  public function home(): View
   {
-    return $this->appService->getHome();
+    return $this->appService->home();
   }
 }

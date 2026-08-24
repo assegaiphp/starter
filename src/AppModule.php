@@ -5,7 +5,9 @@ namespace Assegai\App;
 use Assegai\Core\Attributes\Modules\Module;
 
 #[Module(
-  providers: [AppService::class],
+  providers: [
+    AppService::class
+  ],
   controllers: [AppController::class],
   imports: []
 )]
