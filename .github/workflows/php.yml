@@ -49,11 +49,32 @@ jobs:
       - name: Lint project PHP files
         run: find . -path './.git' -prune -o -name '*.php' -print0 | xargs -0 -n1 php -l
 
+      - name: Check framework release availability
+        id: framework
+        run: |
+          release_metadata=$(composer show assegaiphp/core --all --format=json)
+
+          if printf '%s' "$release_metadata" | php -r '
+            $metadata = json_decode(stream_get_contents(STDIN), true, 512, JSON_THROW_ON_ERROR);
+            exit(in_array("0.10.0", $metadata["versions"] ?? [], true) ? 0 : 1);
+          '; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Framework release unavailable::Core 0.10.0 is not published yet; dependency and runtime checks are deferred."
+            {
+              echo "### Dependency checks deferred"
+              echo "Core 0.10.0 is not published yet. This workflow will activate the dependency, audit, test, and HTTP checks automatically after publication."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
       - name: Resolve Composer cache directory
+        if: steps.framework.outputs.available == 'true'
         id: composer-cache
         run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
 
       - name: Cache Composer downloads
+        if: steps.framework.outputs.available == 'true'
         uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
@@ -63,15 +84,19 @@ jobs:
             ${{ runner.os }}-composer-
 
       - name: Resolve and install latest dependencies
+        if: steps.framework.outputs.available == 'true'
         run: composer update --prefer-dist --no-progress --no-interaction --no-ansi
 
       - name: Audit resolved dependencies
+        if: steps.framework.outputs.available == 'true'
         run: composer audit --locked
 
       - name: Run test suite
+        if: steps.framework.outputs.available == 'true'
         run: composer test
 
       - name: Smoke test HTTP entry point
+        if: steps.framework.outputs.available == 'true'
         run: |
           php -S 127.0.0.1:5000 -t public index.php > /tmp/assegai-starter-server.log 2>&1 &
           server_pid=$!
