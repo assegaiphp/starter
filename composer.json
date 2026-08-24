@@ -10,7 +10,8 @@
       "@php -r \"file_exists('config/secure.php') || copy('config/secure.php.example', 'config/secure.php');\""
     ],
     "post-root-package-install": "@setup",
-    "post-install-cmd": "@setup"
+    "post-install-cmd": "@setup",
+    "post-update-cmd": "@setup"
   },
   "license": "MIT",
   "autoload": {
