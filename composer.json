@@ -1,25 +1,43 @@
 {
-    "name": "assegaiphp/starter",
-    "description": "AssegaiPHP is a modern, powerful server-side framework for PHP developers. It is heavily inspired by NestJS and Angular and is designed to be a viable alternative to other modern frameworks. With AssegaiPHP, developers can quickly and easily get their projects up and running with a highly testable, scalable, loosely coupled, and easily maintainable application architecture. The starter project repository contains everything you need to get started with AssegaiPHP, including a pre-configured application skeleton and all the necessary dependencies. Simply install it with composer and you're ready to go!",
-    "type": "project",
-    "require-dev": {
-        "codeception/codeception": "^4.2"
-    },
-    "scripts": {
-        "start": "php -S localhost:5000 assegai-router.php"
-    },
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Assegai\\App\\": "src/"
-        }
-    },
-    "authors": [],
-    "require": {
-        "php": ">=8.2",
-        "ext-pdo": "*",
-        "ext-curl": "*",
-        "vlucas/phpdotenv": "^5.4",
-        "assegaiphp/core": "^0.3.3"
+  "name": "assegaiphp/starter",
+  "description": "The official starter application for AssegaiPHP.",
+  "type": "project",
+  "scripts": {
+    "start": "php -S localhost:5000 -t public index.php",
+    "test": "vendor/bin/pest",
+    "setup": [
+      "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+      "@php -r \"file_exists('config/secure.php') || copy('config/secure.php.example', 'config/secure.php');\""
+    ],
+    "post-root-package-install": "@setup",
+    "post-install-cmd": "@setup"
+  },
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Assegai\\App\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "authors": [],
+  "require": {
+    "php": "^8.4",
+    "ext-pdo": "*",
+    "ext-curl": "*",
+    "vlucas/phpdotenv": "^5.4",
+    "assegaiphp/core": "^0.10.0"
+  },
+  "require-dev": {
+    "pestphp/pest": "^4.1"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    },
+    "sort-packages": true
+  }
 }

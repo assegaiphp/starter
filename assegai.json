@@ -1,18 +1,64 @@
 {
-    "name": "starter",
-    "description": "AssegaiPHP is a modern, powerful server-side framework for PHP developers. It is heavily inspired by NestJS and Angular and is designed to be a viable alternative to other modern frameworks. With AssegaiPHP, developers can quickly and easily get their projects up and running with a highly testable, scalable, loosely coupled, and easily maintainable application architecture. The starter project repository contains everything you need to get started with AssegaiPHP, including a pre-configured application skeleton and all the necessary dependencies. Simply install it with composer and you're ready to go!",
-    "version": "1.0.0",
-    "projectType": "project",
-    "root": "",
-    "sourceRoot": "src",
-    "scripts": {
-        "test": "./vendor/bin/phpunit --testdox"
-    },
-    "development": {
-        "server": {
-            "host": "localhost",
-            "port": 5000,
-            "openBrowser": true
-        }
+  "name": "starter",
+  "description": "The official starter application for AssegaiPHP.",
+  "version": "0.0.1",
+  "projectType": "project",
+  "root": "",
+  "sourceRoot": "src",
+  "scripts": {
+    "test": "vendor/bin/pest tests"
+  },
+  "development": {
+    "server": {
+      "runtime": "php",
+      "host": "localhost",
+      "port": 5000,
+      "openBrowser": false,
+      "openswoole": {
+        "workerNum": 1,
+        "taskWorkerNum": 0,
+        "maxRequest": 0,
+        "enableCoroutine": true,
+        "hookFlags": "all"
+      }
     }
+  },
+  "cli": {
+    "schematics": {
+      "paths": [
+        "schematics"
+      ],
+      "discoverPackages": true,
+      "allowOverrides": false
+    }
+  },
+  "apiDocs": {
+    "enabled": true,
+    "exportOnServe": false,
+    "exportPath": "generated/openapi.json"
+  },
+  "events": {
+    "wildcards": true,
+    "delimiter": ".",
+    "maxListeners": null,
+    "outbox": {
+      "queue": "rabbitmq.events",
+      "batchSize": 100,
+      "retryDelaySeconds": 60
+    }
+  },
+  "webComponents": {
+    "enabled": true,
+    "prefix": "app",
+    "bundleUrl": null,
+    "bundlePath": null,
+    "output": "public/js/assegai-components.min.js",
+    "buildOnDumpAutoload": false,
+    "hotReload": {
+      "enabled": true,
+      "path": "public/.assegai/wc-hot-reload.json",
+      "pollInterval": 1000,
+      "ttl": 43200
+    }
+  }
 }
