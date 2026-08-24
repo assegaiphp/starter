@@ -6,7 +6,8 @@
  */
 
 $publicDirectory = realpath(__DIR__ . '/public');
-$requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+$encodedRequestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+$requestPath = rawurldecode($encodedRequestPath);
 
 if ($publicDirectory !== false && $requestPath !== '/' && $requestPath !== '') {
   $assetPath = assegai_resolve_public_asset_path($publicDirectory, $requestPath);
@@ -21,7 +22,7 @@ if ($publicDirectory !== false && $requestPath !== '/' && $requestPath !== '') {
   }
 }
 
-if (!isset($_GET['path']) || $_GET['path'] === '') {
+if (PHP_SAPI === 'cli-server' || !isset($_GET['path']) || $_GET['path'] === '') {
   $_GET['path'] = trim($requestPath, '/');
 }
 
