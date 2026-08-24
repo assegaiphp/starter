@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -75,7 +75,7 @@ jobs:
 
       - name: Cache Composer downloads
         if: steps.framework.outputs.available == 'true'
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-php-${{ matrix.php-version }}-composer-${{ hashFiles('composer.json') }}
@@ -100,7 +100,7 @@ jobs:
         run: |
           php -S 127.0.0.1:5000 -t public index.php > /tmp/assegai-starter-server.log 2>&1 &
           server_pid=$!
-          trap 'kill "$server_pid"' EXIT
+          trap 'status=$?; kill "$server_pid" 2>/dev/null || true; if [ "$status" -ne 0 ]; then cat /tmp/assegai-starter-server.log; fi; exit "$status"' EXIT
 
           curl --retry 10 --retry-all-errors --retry-delay 1 --fail --silent --show-error \
             --output /tmp/assegai-starter-home.html http://127.0.0.1:5000/
