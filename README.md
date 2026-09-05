@@ -38,6 +38,16 @@ composer install
 
 Installation creates local `.env` and `config/secure.php` files from their tracked examples without overwriting existing local configuration.
 
+Generate the application key with a Console release that provides `key:generate`:
+
+```bash
+assegai key:generate
+```
+
+This initializes a missing, empty, or scaffold-placeholder `APP_SECRET_KEY` and can also create `.env` from `.env.example` when needed. Commit the example with placeholders and keep `.env` private.
+
+To rotate an existing key, run `assegai key:generate` and confirm, or explicitly pass `--force`. Rotation may invalidate tokens and encrypted data using the old key. Restart long-running processes afterward and share the same key across instances of one environment. Do not regenerate keys on every install, update, or deployment.
+
 Then start the app:
 
 ```bash
