@@ -4,9 +4,9 @@
 
 # AssegaiPHP Starter
 
-The official starter application for AssegaiPHP. It tracks the same project shape and defaults produced by the current `assegai new` command.
+The official starter application for AssegaiPHP. It provides the maintained project layout, configuration defaults and public-asset routing.
 
-The starter declares Core `^0.10.0` and intentionally does not ship a `composer.lock`. Creating or installing a project therefore resolves the newest stable compatible 0.10.x framework release and writes a lock file owned by that application.
+The starter declares Core `^0.11.0` and intentionally does not ship a `composer.lock`. Creating or installing a project therefore resolves the newest stable compatible 0.11.x framework release and writes a lock file owned by that application.
 
 It gives you a working Assegai app with:
 - a root module in `src/AppModule.php`
