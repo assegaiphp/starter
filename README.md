@@ -4,9 +4,9 @@
 
 # AssegaiPHP Starter
 
-The official starter application for AssegaiPHP. It tracks the same project shape and defaults produced by the current `assegai new` command.
+The official starter application for AssegaiPHP. It provides the maintained project layout, configuration defaults and public-asset routing.
 
-The starter declares Core `^0.10.0` and intentionally does not ship a `composer.lock`. Creating or installing a project therefore resolves the newest stable compatible 0.10.x framework release and writes a lock file owned by that application.
+The starter declares Core `^0.11.0` and intentionally does not ship a `composer.lock`. Creating or installing a project therefore resolves the newest stable compatible 0.11.x framework release and writes a lock file owned by that application.
 
 It gives you a working Assegai app with:
 - a root module in `src/AppModule.php`
@@ -37,6 +37,16 @@ composer install
 ```
 
 Installation creates local `.env` and `config/secure.php` files from their tracked examples without overwriting existing local configuration.
+
+Generate the application key with a Console release that provides `key:generate`:
+
+```bash
+assegai key:generate
+```
+
+This initializes a missing, empty, or scaffold-placeholder `APP_SECRET_KEY` and can also create `.env` from `.env.example` when needed. Commit the example with placeholders and keep `.env` private.
+
+To rotate an existing key, run `assegai key:generate` and confirm, or explicitly pass `--force`. Rotation may invalidate tokens and encrypted data using the old key. Restart long-running processes afterward and share the same key across instances of one environment. Do not regenerate keys on every install, update, or deployment.
 
 Then start the app:
 
