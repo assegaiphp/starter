@@ -119,7 +119,7 @@ The OpenSwoole path is currently experimental. Treat it as an opt-in runtime for
 
 ## Release Maintenance
 
-Starter participates in the coordinated framework release inventory. Before releasing it, use Console's shared `release:check` command with the reviewed inventory, canonical module membership and generated owner evidence. The command requires a Console build that provides it; it is not needed to create or run an application. See the [0.11.1 release and upgrade notes](docs/releases/0.11.1.md) for the verification stages and required evidence.
+Starter participates in the coordinated framework release inventory. CI checks its manifest through the pinned shared package policy before running the PHP jobs. The tracked pre-push hook uses the same reader and release data with explicitly selected local checkouts. Whole-release readiness additionally requires the reviewed inventory and generated owner evidence. See the [0.11.1 release and upgrade notes](docs/releases/0.11.1.md) for hook setup, verification stages and required evidence.
 
 ## License
 
