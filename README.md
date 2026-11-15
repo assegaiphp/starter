@@ -6,7 +6,7 @@
 
 The official starter application for AssegaiPHP. It provides the maintained project layout, configuration defaults and public-asset routing.
 
-The starter declares Core `^0.11.0` and intentionally does not ship a `composer.lock`. Creating or installing a project therefore resolves the newest stable compatible 0.11.x framework release and writes a lock file owned by that application.
+Starter 0.11.1 requires Core `~0.11.1` and intentionally does not ship a `composer.lock`. Creating or installing a project resolves a compatible 0.11.x framework release, beginning with the coordinated 0.11.1 correction, and writes a lock file owned by that application. Core 0.11.0 no longer satisfies this starter's minimum requirement.
 
 It gives you a working Assegai app with:
 - a root module in `src/AppModule.php`
@@ -116,6 +116,10 @@ The OpenSwoole path is currently experimental. Treat it as an opt-in runtime for
 - Guide: [https://assegaiphp.com/guide](https://assegaiphp.com/guide)
 - Support: [https://assegaiphp.com/support](https://assegaiphp.com/support)
 - Website: [https://assegaiphp.com](https://assegaiphp.com)
+
+## Release Maintenance
+
+Starter participates in the coordinated framework release inventory. Before releasing it, use Console's shared `release:check` command with the reviewed inventory, canonical module membership and generated owner evidence. The command requires a Console build that provides it; it is not needed to create or run an application. See the [0.11.1 release and upgrade notes](docs/releases/0.11.1.md) for the verification stages and required evidence.
 
 ## License
 
