@@ -5,6 +5,7 @@
   "scripts": {
     "start": "php -S localhost:5000 -t public index.php",
     "test": "vendor/bin/pest",
+    "release:check": "assegai release:check --format=json",
     "setup": [
       "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
       "@php -r \"file_exists('config/secure.php') || copy('config/secure.php.example', 'config/secure.php');\""
@@ -30,7 +31,7 @@
     "ext-pdo": "*",
     "ext-curl": "*",
     "vlucas/phpdotenv": "^5.4",
-    "assegaiphp/core": "^0.11.0"
+    "assegaiphp/core": "~0.11.1"
   },
   "require-dev": {
     "pestphp/pest": "^4.1"
